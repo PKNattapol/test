@@ -66,6 +66,7 @@ export class PasswordRecoveryComponent implements OnInit {
         });
     }
 
+    //recovery function
     recovery() {
         this.passwordRecoveryService.recovery(this.passwordRecoveryForm.get('email').value).subscribe(response => {
             if (response.status != 'success') {

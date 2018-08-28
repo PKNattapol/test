@@ -1,4 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatPaginator, MatSort, MatSnackBar } from '@angular/material';
 import { DataSource } from '@angular/cdk/collections';
 import { merge, Observable, BehaviorSubject, fromEvent, Subject } from 'rxjs';
@@ -8,18 +9,19 @@ import { Router } from '@angular/router';
 import { fuseAnimations } from '@fuse/animations';
 import { FuseUtils } from '@fuse/utils';
 
-import { AuditionsService } from './auditions.service';
+import { ShowroomIDService } from './showroom_id.service';
 import { takeUntil } from 'rxjs/internal/operators';
 
 @Component({
-    selector: 'auditions',
-    templateUrl: './auditions.component.html',
-    styleUrls: ['./auditions.component.scss'],
+    selector: 'showroom_id',
+    templateUrl: './showroom_id.component.html',
+    styleUrls: ['./showroom_id.component.scss'],
     animations: fuseAnimations
 })
-export class AuditionsComponent implements OnInit {
+export class ShowroomIDComponent implements OnInit {
+    showroomIDForm: FormGroup;
     dataSource: FilesDataSource | null;
-    displayedColumns = ['id', 'image', 'name', 'email', 'tel', 'line_id', 'delete'];
+    displayedColumns = ['id'];
 
     @ViewChild(MatPaginator)
     paginator: MatPaginator;
@@ -27,16 +29,14 @@ export class AuditionsComponent implements OnInit {
     @ViewChild(MatSort)
     sort: MatSort;
 
-    @ViewChild('filter')
-    filter: ElementRef;
-
     // Private
     private _unsubscribeAll: Subject<any>;
 
     constructor(
-        private auditionsService: AuditionsService,
+        private showroomIDService: ShowroomIDService,
         private _matSnackBar: MatSnackBar,
-        private router: Router
+        private router: Router,
+        private _formBuilder: FormBuilder
     ) {
         // Set the private defaults
         this._unsubscribeAll = new Subject();
@@ -50,70 +50,40 @@ export class AuditionsComponent implements OnInit {
      * On init
      */
     ngOnInit(): void {
-        this.dataSource = new FilesDataSource(this.auditionsService, this.paginator, this.sort);
-
-        fromEvent(this.filter.nativeElement, 'keyup')
-            .pipe(
-            takeUntil(this._unsubscribeAll),
-            debounceTime(150),
-            distinctUntilChanged()
-            )
-            .subscribe(() => {
-                if (!this.dataSource) {
-                    return;
-                }
-
-                this.dataSource.filter = this.filter.nativeElement.value;
+        this.showroomIDForm = this._formBuilder.group(
+            {
+                showroom_id: ['', Validators.required],
+                password: ['', Validators.required]
             });
-    }
 
-    //delete function
-    delete(id, name) {
-        this._matSnackBar.open('Are you sure to delete ' + name, 'DELETE', {
+        this.dataSource = new FilesDataSource(this.showroomIDService, this.paginator, this.sort);
+    }
+    
+    //add function
+    add(formDirective: any) {
+        this._matSnackBar.open('Successful add ' + this.showroomIDForm.get('showroom_id').value, 'OK', {
             verticalPosition: 'top',
-            duration: 10000
-        }).onAction().subscribe(() => {
-            this._matSnackBar.open('Successful delete ' + name, 'OK', {
-                verticalPosition: 'top',
-                duration: 3000
-            });
-            return true;
-            /*
-            this.auditionsService.delete(id).subscribe(response => {
-                if (response.status != 'success') {
-                    this._matSnackBar.open('Delete failed', 'OK', {
-                        verticalPosition: 'top',
-                        duration: 3000
-                    });
-                    return false;
-                }
-                else {
-                    this._matSnackBar.open('Successful delete ' + name, 'OK', {
-                        verticalPosition: 'top',
-                        duration: 3000
-                    });
-                    return true;
-                }
-            });
-            */
+            duration: 3000
         });
-    }
-
-    //edit function
-    edit(id) {
-        this.router.navigate(['../audition/' + id]);
-    }
-
-    //new function
-    newAudition() {
-        this.router.navigate(['../audition/new']);
-    }
-
-    //download(export) function
-    downloadFile() {
-        this.auditionsService.getDownloadLists().subscribe(lists => {
-            this.auditionsService.exportAsExcelFile(lists, 'Audition_list');
+        formDirective.resetForm();
+        /*
+        this.showroomIDService.add(this.showroomIDForm.get('showroom_id').value, this.showroomIDForm.get('password').value).subscribe(response => {
+            if (response.status != 'success') {
+                this._matSnackBar.open('Failed to add, duplicate ShowroomID', 'OK', {
+                    verticalPosition: 'top',
+                    duration: 3000
+                });
+                return false;
+            }
+            else {
+                this._matSnackBar.open('Successful add ' + this.showroomIDForm.get('showroom_id').value, 'OK', {
+                    verticalPosition: 'top',
+                    duration: 3000
+                });
+                formDirective.resetForm();
+            }
         });
+        */
     }
 }
 
@@ -125,18 +95,18 @@ export class FilesDataSource extends DataSource<any>
     /**
      * Constructor
      *
-     * @param {AuditionsService} auditionsService
+     * @param {ShowroomIDService} showroomIDService
      * @param {MatPaginator} _matPaginator
      * @param {MatSort} _matSort
      */
     constructor(
-        private auditionsService: AuditionsService,
+        private showroomIDService: ShowroomIDService,
         private _matPaginator: MatPaginator,
         private _matSort: MatSort
     ) {
         super();
 
-        this.filteredData = this.auditionsService.auditions;
+        this.filteredData = this.showroomIDService.showroom_id;
     }
 
     /**
@@ -146,7 +116,7 @@ export class FilesDataSource extends DataSource<any>
      */
     connect(): Observable<any[]> {
         const displayDataChanges = [
-            this.auditionsService.onAuditionsChanged,
+            this.showroomIDService.onDataChanged,
             this._matPaginator.page,
             this._filterChange,
             this._matSort.sortChange
@@ -155,7 +125,7 @@ export class FilesDataSource extends DataSource<any>
         return merge(...displayDataChanges)
             .pipe(
             map(() => {
-                let data = this.auditionsService.auditions.slice();
+                let data = this.showroomIDService.showroom_id.slice();
 
                 data = this.filterData(data);
 
@@ -227,18 +197,6 @@ export class FilesDataSource extends DataSource<any>
             switch (this._matSort.active) {
                 case 'id':
                     [propertyA, propertyB] = [a.id, b.id];
-                    break;
-                case 'name':
-                    [propertyA, propertyB] = [a.name, b.name];
-                    break;
-                case 'email':
-                    [propertyA, propertyB] = [a.email, b.email];
-                    break;
-                case 'tel':
-                    [propertyA, propertyB] = [a.tel, b.tel];
-                    break;
-                case 'line_id':
-                    [propertyA, propertyB] = [a.line_id, b.line_id];
                     break;
             }
 

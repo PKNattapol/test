@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 
+import { Static } from 'app/static';
+
 @Injectable()
 export class AuditionService implements Resolve<any>
 {
@@ -57,7 +59,7 @@ export class AuditionService implements Resolve<any>
                 resolve(false);
             }
             else {
-                this._httpClient.get('https://ac6bae7e-313f-40a1-91b6-de496f974fc2.mock.pstmn.io/audition/get/' + this.routeParams.id)
+                this._httpClient.get(Static.getServerUrl() + 'audition/get/' + this.routeParams.id)
                     .subscribe((response: any) => {
                         this.audition = response;
                         this.onAuditionChanged.next(this.audition);
@@ -67,8 +69,8 @@ export class AuditionService implements Resolve<any>
         });
     }
 
-    delete(id: string, ): Observable<any> {
-        return this._httpClient.post<any>('https://ac6bae7e-313f-40a1-91b6-de496f974fc2.mock.pstmn.io/audition/delete', id);
+    delete(id: string): Observable<any> {
+        return this._httpClient.post<any>(Static.getServerUrl() + 'audition/delete', id);
     }
 
     /**
@@ -79,7 +81,7 @@ export class AuditionService implements Resolve<any>
      */
     saveAudition(audition): Promise<any> {
         return new Promise((resolve, reject) => {
-            this._httpClient.post('https://ac6bae7e-313f-40a1-91b6-de496f974fc2.mock.pstmn.io/audition/update/' + audition.id, audition)
+            this._httpClient.post(Static.getServerUrl() + 'audition/update/' + audition.id, audition)
                 .subscribe((response: any) => {
                     resolve(response);
                 }, reject);
@@ -94,10 +96,14 @@ export class AuditionService implements Resolve<any>
      */
     addAudition(audition): Promise<any> {
         return new Promise((resolve, reject) => {
-            this._httpClient.post('https://ac6bae7e-313f-40a1-91b6-de496f974fc2.mock.pstmn.io/audition/add', audition)
+            this._httpClient.post(Static.getServerUrl() + 'audition/add', audition)
                 .subscribe((response: any) => {
                     resolve(response);
                 }, reject);
         });
+    }
+
+    deleteImage(audition_id, image_id): Observable<any> {
+        return this._httpClient.post<any>(Static.getServerUrl() + 'audition/delete_image', {audition_id,image_id});
     }
 }

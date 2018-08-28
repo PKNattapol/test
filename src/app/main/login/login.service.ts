@@ -3,9 +3,10 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map'
 
+import { Static } from 'app/static';
+
 @Injectable()
 export class LoginService {
-
 
     constructor(private http: HttpClient) {
     }
@@ -17,7 +18,6 @@ export class LoginService {
         localStorage.clear();
     }
 
-
     getUserLoggedIn() {
         if (atob(localStorage.getItem('_')) == 'useralreadylogin')
             return true;
@@ -26,6 +26,6 @@ export class LoginService {
     }
 
     login(username: string, password: string): Observable<any> {
-        return this.http.post<any>("https://ac6bae7e-313f-40a1-91b6-de496f974fc2.mock.pstmn.io/user/login", { username, password });
+        return this.http.post<any>(Static.getServerUrl() + "user/login", { username, password });
     }
 }

@@ -1,46 +1,63 @@
 <div id="login" fxLayout="column">
 
+    <!-- CONTENT CARD -->
     <div id="login-form-wrapper" fxLayout="column" fxLayoutAlign="center center">
 
+        <!-- LOGIN FORM -->
         <div id="login-form" [@animate]="{value:'*',params:{duration:'300ms',y:'100px'}}">
 
+            <!-- LOGO -->
             <div class="logo">
-                <img src="assets/images/logos/fuse.svg">
+                <img src="assets/images/logos/showroom.png">
             </div>
+            <!-- / LOGO -->
 
+            <!-- TITLE -->
             <div class="title">LOGIN TO YOUR ACCOUNT</div>
+            <!-- / TITLE-->
 
-            <form name="loginForm" [formGroup]="loginForm" novalidate>
+            <!-- LOGIN FORMGROUP -->
+            <form name="loginForm" [formGroup]="loginForm" #formDirective="ngForm" novalidate>
 
+                <!-- USERNAME INPUT -->
                 <mat-form-field>
                     <input matInput placeholder="Username" formControlName="username">
                     <mat-error *ngIf="loginForm.get('username').hasError('required')">
                         Username is required
                     </mat-error>
                 </mat-form-field>
+                <!-- / USERNAME INPUT -->
 
+                <!-- PASSWORD INPUT -->
                 <mat-form-field>
                     <input matInput type="password" placeholder="Password" formControlName="password">
                     <mat-error>
                         Password is required
                     </mat-error>
                 </mat-form-field>
+                <!-- / PASSWORD INPUT -->
 
+                <!-- PASSWORD RECOVERY LINK -->
                 <div class="remember-forgot-password" fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-between center">
-
                     <a class="forgot-password" routerLink="../password_recovery">
                         Forgot Password?
                     </a>
                 </div>
+                <!-- / PASSWORD RECOVERY LINK -->
 
-                <button mat-raised-button color="accent" class="submit-button" aria-label="LOG IN" [disabled]="loginForm.invalid" (click)="login()">
+                <!-- LOGIN BUTTON -->
+                <button mat-raised-button color="accent" class="submit-button" aria-label="LOG IN" [disabled]="loginForm.invalid" (click)="login(formDirective)">
                     LOGIN
                 </button>
+                <!-- / LOGIN BUTTON -->
 
             </form>
+            <!-- / LOGIN FORMGROUP -->
 
         </div>
+        <!-- / LOGIN FORM -->
 
     </div>
+    <!-- / CONTENT CARD -->
 
 </div>

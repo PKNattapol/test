@@ -5,12 +5,12 @@ import { MatButtonModule, MatFormFieldModule, MatInputModule, MatSnackBarModule 
 import { FuseSharedModule } from '@fuse/shared.module';
 
 import { PasswordRecoveryComponent } from './password_recovery.component';
-import { AuthguardGuard } from 'app/authguard.guard'
+import { AuthguardGuard2 } from 'app/authguard2.guard'
 
 const routes = [
     {
         path: 'password_recovery',
-        logged: [AuthguardGuard],
+        canActivate: [AuthguardGuard2],
         component: PasswordRecoveryComponent
     }
 ];
@@ -31,6 +31,9 @@ const routes = [
     ],
     exports: [
         PasswordRecoveryComponent
+    ],
+    providers: [
+        AuthguardGuard2
     ]
 })
 export class PasswordRecoveryModule {

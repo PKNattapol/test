@@ -5,17 +5,17 @@ import { LoginService } from './main/login/login.service';
 import { Router } from '@angular/router';
 
 @Injectable()
-export class AuthguardGuard implements CanActivate {
+export class AuthguardGuard2 implements CanActivate {
 
 	constructor(private loginService: LoginService, private router: Router) {
 	}
 
-	//security check(must login before access some page)
+	//security check(after login can't access some page)
 	canActivate(
 		next: ActivatedRouteSnapshot,
 		state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-		if (!this.loginService.getUserLoggedIn()) {
-			this.router.navigate(['../login']);
+		if (this.loginService.getUserLoggedIn()) {
+			this.router.navigate(['../dashboard']);
 		} else {
 			return true;
 		}

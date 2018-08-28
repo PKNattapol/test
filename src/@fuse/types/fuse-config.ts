@@ -1,5 +1,4 @@
-export interface FuseConfig
-{
+export interface FuseConfig {
     layout: {
         style: string,
         width: 'fullwidth' | 'boxed',

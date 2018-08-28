@@ -13,10 +13,13 @@
             <!-- APP TITLE -->
             <div fxLayout="row" fxLayoutAlign="start center">
 
+                <!-- BACK BUTTON -->
                 <button mat-icon-button class="mr-0 mr-sm-16" [routerLink]="'/dashboard'">
                     <mat-icon>arrow_back</mat-icon>
                 </button>
+                <!-- / BACK BUTTON -->
 
+                <!-- AUDITION NAME -->
                 <div fxLayout="column" fxLayoutAlign="start start" [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">
                     <div class="h2" *ngIf="pageType ==='edit'">
                         {{audition.name}}
@@ -28,23 +31,33 @@
                         <span>Audition Detail</span>
                     </div>
                 </div>
+                <!-- / AUDITION NAME -->
+
             </div>
             <!-- / APP TITLE -->
 
             <div>
+
+                <!-- ADD BUTTON -->
                 <button mat-raised-button class="save-audition-button mat-white-bg" [disabled]="auditionForm.invalid" *ngIf="pageType ==='new'"
                     (click)="addAudition()">
                     <span>ADD</span>
                 </button>
+                <!-- / ADD BUTTON -->
 
+                <!-- DELETE BUTTON -->
                 <button mat-raised-button class="delete-audition-button mat-white-bg" *ngIf="pageType ==='edit'" (click)="deleteAudition(audition.id, audition.name)">
                     <span>DELETE</span>
                 </button>
+                <!-- / DELETE BUTTON -->
 
-                <button mat-raised-button class="save-audition-button mat-white-bg" [disabled]="auditionForm.invalid || auditionForm.pristine"
+                <!-- SAVE BUTTON -->
+                <button mat-raised-button class="save-audition-button mat-white-bg" [disabled]="auditionForm.invalid || (auditionForm.pristine && imageIn())"
                     *ngIf="pageType ==='edit'" (click)="saveAudition()">
                     <span>SAVE</span>
                 </button>
+                <!-- / SAVE BUTTON -->
+
             </div>
 
         </div>
@@ -56,27 +69,37 @@
             <!-- CONTENT -->
             <div class="content">
 
+                <!-- AUDITION FORM -->
                 <form name="auditionForm" [formGroup]="auditionForm" class="audition w-100-p" fxLayout="column" fxFlex>
 
+                    <!-- TAB GROUP -->
                     <mat-tab-group>
 
+                        <!-- BASIC INFO TAB -->
                         <mat-tab label="Basic Info">
 
                             <div class="tab-content p-24" fusePerfectScrollbar>
 
                                 <mat-form-field class="w-100-p">
-                                    <input matInput name="id" formControlName="id" placeholder="Audition ID" required>
+                                    <input matInput name="showroom_id" formControlName="showroom_id" placeholder="Showroom ID">
                                 </mat-form-field>
 
                                 <mat-form-field class="w-100-p">
-                                    <input matInput name="name" formControlName="name" placeholder="Audition Name" required>
+                                    <input matInput name="name" formControlName="name" placeholder="Name" required>
                                 </mat-form-field>
 
                                 <mat-form-field class="w-100-p">
-                                    <textarea matInput name="description" formControlName="description" placeholder="Audition Description" rows="5">
-                                        </textarea>
+                                    <input matInput name="email" formControlName="email" placeholder="Email" required>
                                 </mat-form-field>
 
+                                <mat-form-field class="w-100-p">
+                                    <input matInput name="tel" formControlName="tel" placeholder="Tel" required>
+                                </mat-form-field>
+
+                                <mat-form-field class="w-100-p">
+                                    <input matInput name="line_id" formControlName="line_id" placeholder="Line ID" required>
+                                </mat-form-field>
+                                
                                 <mat-form-field class="w-100-p">
                                     <textarea matInput name="custom01" formControlName="custom01" placeholder="Custom Field 01" rows="2">
                                             </textarea>
@@ -94,17 +117,53 @@
                             </div>
 
                         </mat-tab>
+                        <!-- / BASIC INFO TAB -->
 
+                        <!-- IMAGE TAB -->
                         <mat-tab label="Images">
                             <div class="tab-content p-24" fusePerfectScrollbar>
-                                <div fxLayout="row wrap" fxLayoutAlign="start start">
-                                    
+
+                                <!-- INPUT IMAGE -->
+                                <div class="image-input" fxLayout="row wrap" fxLayoutAlign="start start">
+                                    <div class="image" *ngFor="let url of urls">
+                                        <button class="delete-button" (click)="removeImage(url)">X</button>
+                                        <img class="auditions-image" [src]="url">
+                                    </div>
                                 </div>
+                                <!-- / INPUT IMAGE -->
+
+                                <!-- INPUT BUTTON -->
+                                <div class="image-input-button" fxLayout="row wrap" fxLayoutAlign="start start">
+                                    <input type="file" name="file" id="file" class="inputfile" accept="image/*" multiple (change)="detectFiles($event)">
+                                    <label for="file">Choose a file</label>
+                                </div>
+                                <!-- / INPUT BUTTON -->
+
+                                <!-- TEST IMAGE -->
+                                <div class="image" *ngIf="audition.images.length === 0">
+                                    <button class="delete-button" (click)="deleteImage(audition.id, 'test image')">X</button>
+                                    <img class="auditions-image" [src]="'assets/images/logos/showroom.png'">
+                                </div>
+                                <!-- / TEST IMAGE -->
+
+                                <!-- IMAGE -->
+                                <div *ngFor="let image of audition.images">
+                                    <div class="image" *ngIf="audition.images.length > 0">
+                                        <button class="delete-button" (click)="deleteImage(audition.id, 'test image')">X</button>
+                                        <img class="auditions-image" [src]="'assets/images/logos/showroom.png'">
+                                    </div>
+                                </div>
+                                <!-- / IMAGE -->
+
                             </div>
                         </mat-tab>
+                        <!-- / IMAGE TAB -->
 
                     </mat-tab-group>
+                    <!-- / TAB GROUP -->
+
                 </form>
+                <!-- / AUDITION FORM -->
 
             </div>
             <!-- / CONTENT -->
@@ -114,4 +173,5 @@
 
     </div>
     <!-- / CENTER -->
+    
 </div>

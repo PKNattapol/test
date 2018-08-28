@@ -19,9 +19,9 @@ import { LayoutModule } from 'app/layout/layout.module';
 import { LoginModule } from 'app/main/login/login.module';
 import { PasswordRecoveryModule } from 'app/main/password_recovery/password_recovery.module';
 import { DashboardModule } from 'app/main/dashboard/dashboard.module';
+import { ShowroomIDModule } from 'app/main/showroom_id/showroom_id.module';
 
 import { LoginService } from 'app/main/login/login.service';
-import { AuthguardGuard } from './authguard.guard';
 
 const appRoutes: Routes = [
     {
@@ -60,14 +60,14 @@ const appRoutes: Routes = [
         LayoutModule,
         LoginModule,
         PasswordRecoveryModule,
-        DashboardModule
+        DashboardModule,
+        ShowroomIDModule
     ],
     bootstrap: [
         AppComponent
     ],
     providers: [
-        LoginService,
-        AuthguardGuard
+        LoginService
     ]
 })
 export class AppModule {

@@ -11,19 +11,21 @@ import { FuseUtils } from '@fuse/utils';
 
 import { Audition } from './audition.model';
 import { AuditionService } from './audition.service';
+import { DISABLED } from '@angular/forms/src/model';
 
 @Component({
-    selector     : 'audition',
-    templateUrl  : './audition.component.html',
-    styleUrls    : ['./audition.component.scss'],
+    selector: 'audition',
+    templateUrl: './audition.component.html',
+    styleUrls: ['./audition.component.scss'],
     encapsulation: ViewEncapsulation.None,
-    animations   : fuseAnimations
+    animations: fuseAnimations
 })
-export class AuditionComponent implements OnInit, OnDestroy
-{
+export class AuditionComponent implements OnInit, OnDestroy {
     audition: Audition;
     pageType: string;
     auditionForm: FormGroup;
+
+    urls = new Array<string>();
 
     // Private
     private _unsubscribeAll: Subject<any>;
@@ -42,8 +44,7 @@ export class AuditionComponent implements OnInit, OnDestroy
         private _location: Location,
         private _matSnackBar: MatSnackBar,
         private router: Router
-    )
-    {
+    ) {
         // Set the default
         this.audition = new Audition();
 
@@ -58,20 +59,17 @@ export class AuditionComponent implements OnInit, OnDestroy
     /**
      * On init
      */
-    ngOnInit(): void
-    {
-        // Subscribe to update product on changes
+    ngOnInit(): void {
+        // Subscribe to update audition on changes
         this.auditionService.onAuditionChanged
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(audition => {
 
-                if ( audition )
-                {
+                if (audition) {
                     this.audition = new Audition(audition);
                     this.pageType = 'edit';
                 }
-                else
-                {
+                else {
                     this.pageType = 'new';
                     this.audition = new Audition();
                 }
@@ -83,8 +81,7 @@ export class AuditionComponent implements OnInit, OnDestroy
     /**
      * On destroy
      */
-    ngOnDestroy(): void
-    {
+    ngOnDestroy(): void {
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next();
         this._unsubscribeAll.complete();
@@ -95,21 +92,23 @@ export class AuditionComponent implements OnInit, OnDestroy
     // -----------------------------------------------------------------------------------------------------
 
     /**
-     * Create product form
+     * Create audition form
      *
      * @returns {FormGroup}
      */
-    createAuditionForm(): FormGroup
-    {
+    createAuditionForm(): FormGroup {
         return this._formBuilder.group({
-            id              : [this.audition.id],
-            name            : [this.audition.name],
-            handle          : [this.audition.handle],
-            description     : [this.audition.description],
-            custom01        : [this.audition.custom01],
-            custom02        : [this.audition.custom02],
-            custom03        : [this.audition.custom03],
-            image           : [this.audition.image]
+            id: [this.audition.id],
+            showroom_id: [{value: this.audition.showroom_id, disabled:true}],
+            name: [this.audition.name],
+            handle: [this.audition.handle],
+            email: [this.audition.email],
+            tel: [this.audition.tel],
+            line_id: [this.audition.line_id],
+            custom01: [this.audition.custom01],
+            custom02: [this.audition.custom02],
+            custom03: [this.audition.custom03],
+            images: [this.audition.images]
         });
     }
 
@@ -118,6 +117,13 @@ export class AuditionComponent implements OnInit, OnDestroy
             verticalPosition: 'top',
             duration: 10000
         }).onAction().subscribe(() => {
+            this._matSnackBar.open('Successful delete ' + name, 'OK', {
+                verticalPosition: 'top',
+                duration: 3000
+            });
+            this.router.navigate(['../dashboard']);
+            return true;
+            /*
             this.auditionService.delete(id).subscribe(response => {
                 if (response.status != 'success') {
                     this._matSnackBar.open('Delete failed', 'OK', {
@@ -135,14 +141,19 @@ export class AuditionComponent implements OnInit, OnDestroy
                     return true;
                 }
             });
+            */
         });
     }
 
     /**
-     * Save product
+     * Save audition
      */
-    saveAudition(): void
-    {
+    saveAudition(): void {
+        this._matSnackBar.open('Audition saved', 'OK', {
+            verticalPosition: 'top',
+            duration: 3000
+        });
+        /*
         const data = this.auditionForm.getRawValue();
         data.handle = FuseUtils.handleize(data.name);
 
@@ -155,16 +166,22 @@ export class AuditionComponent implements OnInit, OnDestroy
                 // Show the success message
                 this._matSnackBar.open('Audition saved', 'OK', {
                     verticalPosition: 'top',
-                    duration        : 3000
+                    duration: 3000
                 });
             });
+        */
+        this.urls = [];
     }
 
     /**
-     * Add product
+     * Add audition
      */
-    addAudition(): void
-    {
+    addAudition(): void {
+        this._matSnackBar.open('Audition saved', 'OK', {
+            verticalPosition: 'top',
+            duration: 3000
+        });
+        /*
         const data = this.auditionForm.getRawValue();
         data.handle = FuseUtils.handleize(data.name);
 
@@ -177,11 +194,75 @@ export class AuditionComponent implements OnInit, OnDestroy
                 // Show the success message
                 this._matSnackBar.open('Audition added', 'OK', {
                     verticalPosition: 'top',
-                    duration        : 3000
+                    duration: 3000
                 });
 
                 // Change the location with new one
                 this._location.go('audition/' + this.audition.id);
             });
+        */
+        this.urls = [];
+    }
+
+    //detect image
+    detectFiles(event) {
+        let files = event.target.files;
+        if (files) {
+            for (let file of files) {
+                let reader = new FileReader();
+                reader.onload = (e: any) => {
+                    this.urls.push(e.target.result);
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+    }
+
+    //remove image
+    removeImage(url) {
+        for(var i = 0; i < this.urls.length; i++)
+        {
+            if(this.urls[i] == url)
+            {
+                this.urls.splice(i, 1)
+            }
+        }
+        var event;
+        event.target.file = this.urls
+        this.detectFiles(event);
+    }
+
+    //image form checker
+    imageIn()
+    {
+        if(this.urls.length > 0)
+            return false;
+        else
+            return true;
+    }
+
+    //delete image
+    deleteImage(audition_id, image_id) {
+        this._matSnackBar.open('Are you sure to delete ' + image_id, 'DELETE', {
+            verticalPosition: 'top',
+            duration: 10000
+        }).onAction().subscribe(() => {
+            this.auditionService.deleteImage(audition_id, image_id).subscribe(response => {
+                if (response.status != 'success') {
+                    this._matSnackBar.open('Delete failed', 'OK', {
+                        verticalPosition: 'top',
+                        duration: 3000
+                    });
+                    return false;
+                }
+                else {
+                    this._matSnackBar.open('Successful delete ' + image_id, 'OK', {
+                        verticalPosition: 'top',
+                        duration: 3000
+                    });
+                    return true;
+                }
+            });
+        });
     }
 }

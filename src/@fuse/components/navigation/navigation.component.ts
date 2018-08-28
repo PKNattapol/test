@@ -8,7 +8,7 @@ import { FuseNavigationService } from '@fuse/components/navigation/navigation.se
     selector     : 'fuse-navigation',
     templateUrl  : './navigation.component.html',
     styleUrls    : ['./navigation.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class FuseNavigationComponent implements OnInit
 {
@@ -25,7 +25,7 @@ export class FuseNavigationComponent implements OnInit
      * Constructor
      */
     constructor(
-        private _fuseNavigationService: FuseNavigationService
+        private _fuseNavigationService: FuseNavigationService,
     )
     {
         // Set the private defaults

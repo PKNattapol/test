@@ -18,9 +18,6 @@ import { LoginService } from './login.service';
 export class LoginComponent implements OnInit {
     loginForm: FormGroup;
 
-    username: string;
-    password: string;
-
     /**
      * Constructor
      *
@@ -71,23 +68,31 @@ export class LoginComponent implements OnInit {
             });
     }
 
-    login() {
-        this.loginService.login(this.loginForm.get('username').value, this.loginForm.get('password').value).subscribe(response => {
+    //login function
+    login(formDirective: any) {
+        this.loginService.setUserLoggedIn();
+        this.router.navigate(['../dashboard']);
+        /*
+        var username = this.loginForm.get('username').value;
+        this.loginService.login(username, this.loginForm.get('password').value).subscribe(response => {
             if (response.status != 'success') {
                 this._matSnackBar.open('Incorrect username or password', 'OK', {
                     verticalPosition: 'top',
                     duration: 3000
                 });
+                formDirective.resetForm();
+                this.loginForm.get('username').setValue(username);
                 return false;
             }
             else {
                 this.loginService.setUserLoggedIn();
-                this.router.navigate(['../dashboard-test']);
+                this.router.navigate(['../dashboard']);
                 this._matSnackBar.open('Successful login', 'OK', {
                     verticalPosition: 'top',
                     duration: 3000
                 });
             }
         });
+        */
     }
 }

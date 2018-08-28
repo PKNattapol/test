@@ -38,17 +38,11 @@ export class ToolbarComponent implements OnInit, OnDestroy {
      * @param {FuseConfigService} _fuseConfigService
      * @param {FuseSidebarService} _fuseSidebarService
      * @param {TranslateService} _translateService
-     * @param {Router} router
-     * @param {LoginService} loginService
-     * @param {MatSnackBar} _matSnackBar
      */
     constructor(
         private _fuseConfigService: FuseConfigService,
         private _fuseSidebarService: FuseSidebarService,
         private _translateService: TranslateService,
-        private router: Router,
-        private loginService: LoginService,
-        private _matSnackBar: MatSnackBar
     ) {
         // Set the defaults
         this.userStatusOptions = [
@@ -162,15 +156,5 @@ export class ToolbarComponent implements OnInit, OnDestroy {
 
         // Use the selected language for translations
         this._translateService.use(lang.id);
-    }
-
-    logout()
-    {
-        this.loginService.setUserLoggedOut();
-        this.router.navigate(['../login']);
-        this._matSnackBar.open('Successful logout', 'OK', {
-            verticalPosition: 'top',
-            duration: 3000
-        });
     }
 }

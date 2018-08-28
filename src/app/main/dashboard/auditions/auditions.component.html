@@ -33,52 +33,85 @@
             <!-- / SEARCH -->
             
             <div>
+
+                <!-- NEW BUTTON -->
                 <button mat-raised-button class="new-audition-button mat-white-bg" (click)="newAudition()">
                     <span>NEW</span>
                 </button>
+                <!-- / NEW BUTTON -->
 
+                <!-- EXPORT BUTTON -->
                 <button mat-raised-button class="add-audition-button mat-white-bg" (click)="downloadFile()">
-                    <span>DOWNLOAD</span>
+                    <span>EXPORT</span>
                 </button>
+                <!-- / EXPORT BUTTON -->
+
             </div>
+
         </div>
         <!-- / HEADER -->
 
         <!-- CONTENT CARD -->
         <div class="content-card mat-white-bg">
 
+            <!-- AUDITIONS TABLE -->
             <mat-table class="auditions-table" #table [dataSource]="dataSource" matSort [@animateStagger]="{value:'50'}" fusePerfectScrollbar>
 
-                <!-- ID Column -->
+                <!-- ID COLUMN -->
                 <ng-container matColumnDef="id">
                     <mat-header-cell *matHeaderCellDef mat-sort-header>ID</mat-header-cell>
                     <mat-cell *matCellDef="let auditions" (click)="edit(auditions.id)">
                         <p class="text-truncate">{{auditions.id}}</p>
                     </mat-cell>
                 </ng-container>
+                <!-- / ID COLUMN -->
 
-                <!-- Name Column -->
+                <!-- IMAGE COLUMN -->
+                <ng-container matColumnDef="image">
+                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                    <mat-cell *matCellDef="let auditions">
+                        <img class="auditions-image" [src]="'assets/images/logos/showroom.png'">
+                    </mat-cell>
+                </ng-container>
+                <!-- / IMAGE COLUMN -->
+
+                <!-- NAME COLUMN -->
                 <ng-container matColumnDef="name">
                     <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
                     <mat-cell *matCellDef="let auditions" (click)="edit(auditions.id)">
                         <p class="text-truncate">{{auditions.name}}</p>
                     </mat-cell>
                 </ng-container>
+                <!-- / NAME COLUMN -->
 
-                <ng-container matColumnDef="age">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header>Age</mat-header-cell>
+                <!-- EMAIL COLUMN -->
+                <ng-container matColumnDef="email">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Email</mat-header-cell>
                     <mat-cell *matCellDef="let auditions" (click)="edit(auditions.id)">
-                        <p class="text-truncate">{{auditions.age}}</p>
+                        <p class="text-truncate">{{auditions.email}}</p>
                     </mat-cell>
                 </ng-container>
+                <!-- / EMAIL COLUMN -->
 
-                <ng-container matColumnDef="height">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header>Height</mat-header-cell>
+                <!-- TEL COLUMN -->
+                <ng-container matColumnDef="tel">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Tel</mat-header-cell>
                     <mat-cell *matCellDef="let auditions" (click)="edit(auditions.id)">
-                        <p class="text-truncate">{{auditions.height}}</p>
+                        <p class="text-truncate">{{auditions.tel}}</p>
                     </mat-cell>
                 </ng-container>
+                <!-- / TEL COLUMN -->
 
+                <!-- LINEID COLUMN -->
+                <ng-container matColumnDef="line_id">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Line ID</mat-header-cell>
+                        <mat-cell *matCellDef="let auditions" (click)="edit(auditions.id)">
+                            <p class="text-truncate">{{auditions.line_id}}</p>
+                        </mat-cell>
+                    </ng-container>
+                    <!-- / LINEID COLUMN -->
+
+                <!-- DELETE COLUMN -->
                 <ng-container matColumnDef="delete">
                     <mat-header-cell *matHeaderCellDef mat-sort-header></mat-header-cell>
                     <mat-cell *matCellDef="let auditions">
@@ -89,18 +122,28 @@
                         </button>
                     </mat-cell>
                 </ng-container>
+                <!-- / DELETE COLUMN -->
 
+                <!-- HEADER ROW -->
                 <mat-header-row *matHeaderRowDef="displayedColumns; sticky:true"></mat-header-row>
+                <!-- / HEADER ROW -->
 
+                <!-- ROW -->
                 <mat-row *matRowDef="let auditions; columns: displayedColumns;" class="auditions" matRipple></mat-row>
+                <!-- / ROW -->
 
             </mat-table>
+            <!-- / AUDITIONS TABLE -->
 
+            <!-- PAGINATOR -->
             <mat-paginator #paginator [length]="dataSource.filteredData.length" [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
             </mat-paginator>
+            <!-- / PAGINATOR -->
 
         </div>
         <!-- / CONTENT CARD -->
+
     </div>
     <!-- / CENTER -->
+
 </div>

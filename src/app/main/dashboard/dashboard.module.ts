@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MatButtonModule, MatChipsModule, MatFormFieldModule, MatIconModule, MatInputModule, MatPaginatorModule, MatRippleModule, MatSelectModule, MatSnackBarModule, MatSortModule, MatTableModule, MatTabsModule } from '@angular/material';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
-import { AgmCoreModule } from '@agm/core';
 
 import { FuseSharedModule } from '@fuse/shared.module';
 import { FuseWidgetModule } from '@fuse/components/widget/widget.module';
@@ -23,10 +21,10 @@ const routes: Routes = [
         }
     },
     {
-        path     : 'audition/:id',
+        path: 'audition/:id',
         canActivate: [AuthguardGuard],
         component: AuditionComponent,
-        resolve  : {
+        resolve: {
             data: AuditionService
         }
     }
@@ -52,11 +50,6 @@ const routes: Routes = [
         MatSnackBarModule,
         MatTableModule,
         MatTabsModule,
-
-        NgxChartsModule,
-        AgmCoreModule.forRoot({
-            apiKey: 'AIzaSyD81ecsCj4yYpcXSLFcYU97PvRsE_X8Bx8'
-        }),
 
         FuseSharedModule,
         FuseWidgetModule,
